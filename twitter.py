@@ -54,7 +54,7 @@ if __name__ == "__main__":
             if phrase:
                 split_phrase = phrase.group().split()
                 term = split_phrase[0]
-                subprocess.run(['osascript', 'text.applescript', term])
+                subprocess.run(['osascript', 'text.applescript', term]) 
                 print(f'\nsent {term} to 888222')
         print('.', end='')
         sys.stdout.flush()
