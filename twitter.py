@@ -17,24 +17,29 @@ scope = [
 
 # start_time,end_time,since_id,until_id,max_results,next_token,
 #   expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-query_params = {'query': 'from:johngreen','tweet.fields': 'author_id'}
-twitter = OAuth2Session(client_id, scope=scope, redirect_uri=redirect_uri)
-authorization_url, state = twitter.authorization_url(oauth_url)
+query_params = {'query': 'from:USMNT','tweet.fields': 'lang,author_id','max_results': '100'}
+    # Tweet fields are adjustable.
+    # Options include:
+    # attachments, author_id, context_annotations,
+    # conversation_id, created_at, entities, geo, id,
+    # in_reply_to_user_id, lang, non_public_metrics, organic_metrics,
+    # possibly_sensitive, promoted_metrics, public_metrics, referenced_tweets,
+    # source, text, and withheld
 
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {bearer_token}"
     r.headers["User-Agent"] = "v2RecentSearchPython"
     return r
 
-def connect_to_endpoint(url, params):
-    response = requests.get(url, auth=bearer_oauth, params=params)
+def connect_to_endpoint(url, query_params):
+    response = requests.get(url, auth=bearer_oauth, params=query_params)
     # print(response.status_code) # uncomment if needed to debug
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return response.json()
 
 def connect_to_endpoint2(url):
-    response = requests.get(url, auth=bearer_oauth)
+    response = requests.request('get', url, auth=bearer_oauth)
     # print(response.status_code) # uncomment if needed to debug
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
@@ -47,13 +52,6 @@ def get_recent_IDs():
         ids.append(tweet['id'])
     return ids
 
-def get_likes():
-    likes = []
-    for id in get_recent_IDs():
-        r = connect_to_endpoint2(f'{base_url}tweets?ids={id}&tweet.fields=public_metrics')['data'][0] # &expansions=attachments.media_keys&media.fields=public_metrics')['data'][0]
-        likes.append(r['public_metrics']['like_count'])
-    return likes
-
 def get_tweets():
     tweets = []
     for id in get_recent_IDs():
@@ -61,18 +59,8 @@ def get_tweets():
         tweets.append(r['text'])
     return tweets
 
-'''def get_impressions():
-    tweets = []
-    for id in get_recent_IDs():
-        r = connect_to_endpoint2(f'{search_url}tweets/{id}?tweet.fields=non_public_metrics,organic_metrics&media.fields=non_public_metrics,organic_metrics&expansions=attachments.media_keys') # &expansions=attachments.media_keys&media.fields=public_metrics')['data'][0]
-        tweets.append(r)
-        return tweets
-    return tweets'''
-
 if __name__ == "__main__":
     tweets = get_tweets()
-    likes = get_likes()
-    # impressions = get_impressions() # not public
-    # print(f'{impressions}\n')
-    for like, tweet in zip(likes, tweets):
-        print(f'{like}: {tweet}')
+    for tweet in tweets:
+        print(tweet)
+        print('----------------------------------------------------------------------------')
