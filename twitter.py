@@ -49,7 +49,7 @@ def get_tweet():
 if __name__ == "__main__":
     used_ids = []
     while True:
-        time.sleep(3)
+        time.sleep(1)
         id, tweet = get_tweet()
         if (id not in used_ids):
             phrase = re.search("\w+\d+ to \d+", str(tweet))
