@@ -23,14 +23,12 @@ def bearer_oauth(r):
 
 def connect_to_endpoint(url, query_params):
     response = requests.get(url, auth=bearer_oauth, params=query_params)
-    # print(response.status_code) # uncomment if needed to debug
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return response.json()
 
 def connect_to_endpoint2(url):
     response = requests.request('get', url, auth=bearer_oauth)
-    # print(response.status_code) # uncomment if needed to debug
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return response.json()
@@ -56,9 +54,8 @@ if __name__ == "__main__":
             if phrase:
                 split_phrase = phrase.group().split()
                 term = split_phrase[0]
-                dest = split_phrase[2]
-                subprocess.run(['osascript', 'text.applescript', term, dest])
-                print(f'\nsent {term} to {dest}')
+                subprocess.run(['osascript', 'text.applescript', term])
+                print(f'\nsent {term} to 888222')
         print('.', end='')
         sys.stdout.flush()
         used_ids.append(id)
