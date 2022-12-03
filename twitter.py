@@ -58,7 +58,7 @@ if __name__ == "__main__":
                 term = split_phrase[0]
                 dest = split_phrase[2]
                 subprocess.run(['osascript', 'text.applescript', term, dest])
-                print(f'sent {term} to {dest}')
+                print(f'\nsent {term} to {dest}')
         print('.', end='')
         sys.stdout.flush()
         used_ids.append(id)
