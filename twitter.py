@@ -1,30 +1,20 @@
-
+import re
 import requests
-from requests_oauthlib import OAuth2Session
+import subprocess
+import time
+import sys
+
 from os import environ
 
 base_url = "https://api.twitter.com/2/"
-redirect_uri = "https://joshpark.dev/tweetkinetics"
-oauth_url = f'{base_url}oauth2/'
 
 bearer_token = environ.get("TWITTER_BEARER_TOKEN")
 client_id = environ.get("TWITTER_OAUTH_CID")
 client_secret = environ.get("TWITTER_OAUTH_CLIENT_SECRET")
-scope = [
-    "tweet.fields=non_public_metrics,organic_metrics",
-    "expansions=attachments.media_keys&media.fields=non_public_metrics,organic_metrics",
-]
 
 # start_time,end_time,since_id,until_id,max_results,next_token,
 #   expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-query_params = {'query': 'from:USMNT','tweet.fields': 'lang,author_id','max_results': '100'}
-    # Tweet fields are adjustable.
-    # Options include:
-    # attachments, author_id, context_annotations,
-    # conversation_id, created_at, entities, geo, id,
-    # in_reply_to_user_id, lang, non_public_metrics, organic_metrics,
-    # possibly_sensitive, promoted_metrics, public_metrics, referenced_tweets,
-    # source, text, and withheld
+query_params = {'query': 'from:USMNT','max_results': '10'}
 
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {bearer_token}"
@@ -45,22 +35,30 @@ def connect_to_endpoint2(url):
         raise Exception(response.status_code, response.text)
     return response.json()
 
-def get_recent_IDs():
+def get_most_recent_ID():
     json_response = connect_to_endpoint(f'{base_url}tweets/search/recent', query_params)
     ids = []
-    for tweet in json_response['data']:
-        ids.append(tweet['id'])
-    return ids
+    return json_response['data'][0]['id']
 
-def get_tweets():
+def get_tweet():
     tweets = []
-    for id in get_recent_IDs():
-        r = connect_to_endpoint2(f'{base_url}tweets?ids={id}&tweet.fields=public_metrics')['data'][0] # &expansions=attachments.media_keys&media.fields=public_metrics')['data'][0]
-        tweets.append(r['text'])
-    return tweets
+    id = get_most_recent_ID()
+    r = connect_to_endpoint2(f'{base_url}tweets?ids={id}')['data'][0]
+    return (id, r['text'])
 
 if __name__ == "__main__":
-    tweets = get_tweets()
-    for tweet in tweets:
-        print(tweet)
-        print('----------------------------------------------------------------------------')
+    used_ids = []
+    while True:
+        time.sleep(3)
+        id, tweet = get_tweet()
+        if (id not in used_ids):
+            phrase = re.search("\w+\d+ to \d+", str(tweet))
+            if phrase:
+                split_phrase = phrase.group().split()
+                term = split_phrase[0]
+                dest = split_phrase[2]
+                subprocess.run(['osascript', 'text.applescript', term, dest])
+                print(f'sent {term} to {dest}')
+        print('.', end='')
+        sys.stdout.flush()
+        used_ids.append(id)
