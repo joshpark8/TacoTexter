@@ -14,7 +14,7 @@ client_secret = environ.get("TWITTER_OAUTH_CLIENT_SECRET")
 
 # start_time,end_time,since_id,until_id,max_results,next_token,
 #   expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-query_params = {'query': 'from:USMNT','max_results': '10'}
+query_params = {'query': 'from:ChipotleTweets','max_results': '10'}
 
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {bearer_token}"
