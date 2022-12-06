@@ -45,11 +45,11 @@ if __name__ == "__main__":
             phrase = re.search("\w+\d+ to \d+", str(tweet))
             if phrase:
                 current_time = datetime.now().strftime('%H:%M:%S')
-                print(f'got tweet at {current_time}')
+                print(f'\ngot tweet at {current_time}')
 
                 term = phrase.group().split()[0]
-                subprocess.run(['osascript', 'text.applescript', term]) 
-                
+                subprocess.run(['osascript', 'text.applescript', term, '888222']) 
+
                 current_time = datetime.now().strftime('%H:%M:%S')
                 print(f'\nsent {term} to 888222 at {current_time}')
 

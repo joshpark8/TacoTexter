@@ -1,4 +1,4 @@
-on run {targetMessage}
+on run {targetMessage, targetBuddyPhone}
     tell application "Messages"
         set targetService to 1st service whose service type = SMS
         set targetBuddy to buddy targetBuddyPhone of targetService
