@@ -4,9 +4,7 @@ import subprocess
 import time
 import sys
 import json
-from datetime import datetime
-
-
+from datetime import datetime, timedelta
 
 from os import environ
 
@@ -40,17 +38,20 @@ if __name__ == "__main__":
     print(f'starting at {current_time}')
     while True:
         time.sleep(1)
-        tweet, creation_time = get_most_recent_tweet()
+        tweet, utc_dt = get_most_recent_tweet()
+        creation_time = datetime(*time.strptime(utc_dt, "%Y-%m-%dT%H:%M:%S.%fZ")[:6]) - timedelta(hours = 5)
+        creation_time = creation_time.strftime('%H:%M:%S.%f')
+
         if tweet != last_tweet:
             phrase = re.search("\w+\d+ to \d+", str(tweet))
             if phrase:
-                current_time = datetime.now().strftime('%H:%M:%S')
+                current_time = datetime.now().strftime('%H:%M:%S.%f')
                 print(f'\ntweet created at {creation_time}, recieved at {current_time}')
 
                 term = phrase.group().split()[0]
                 subprocess.run(['osascript', 'text.applescript', term, '888222']) 
 
-                current_time = datetime.now().strftime('%H:%M:%S')
+                current_time = datetime.now().strftime('%H:%M:%S.%f')
                 print(f'\nsent {term} to 888222 at {current_time}')
 
             last_tweet = tweet
