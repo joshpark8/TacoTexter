@@ -52,8 +52,6 @@ if __name__ == "__main__":
                 subprocess.run(['osascript', 'text.applescript', term, '888222']) 
 
                 current_time = datetime.now().strftime('%H:%M:%S.%f')
-                print(f'\nsent {term} to 888222 at {current_time}')
+                print(f'sent {term} to 888222 at {current_time}\n')
 
             last_tweet = tweet
-        print('.', end='')
-        sys.stdout.flush()
