@@ -5,7 +5,7 @@ import time
 
 from datetime import datetime, timedelta
 from os import environ
- 
+
 base_url = "https://api.twitter.com/2/"
 
 bearer_token = environ.get("TWITTER_BEARER_TOKEN")
