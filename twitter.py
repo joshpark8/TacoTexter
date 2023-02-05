@@ -2,8 +2,6 @@ import re
 import requests
 import subprocess
 import time
-import sys
-import json
 from datetime import datetime, timedelta
 
 from os import environ
