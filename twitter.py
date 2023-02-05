@@ -2,8 +2,8 @@ import re
 import requests
 import subprocess
 import time
-from datetime import datetime, timedelta
 
+from datetime import datetime, timedelta
 from os import environ
 
 base_url = "https://api.twitter.com/2/"
